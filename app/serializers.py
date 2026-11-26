@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from app.models import Genre, Actor, Play, TheatreHall, Performance, Reservation
+from app.models import Genre, Actor, Play, TheatreHall, Performance, Reservation, Ticket
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -38,6 +38,8 @@ class TheatreHallSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
+    play = serializers.CharField(source="play.title", read_only=True)
+    theatre_hall = serializers.CharField(source="theatre_hall.name", read_only=True)
     class Meta:
         model = Performance
         fields = ("id", "play", "theatre_hall", "show_time")
@@ -60,3 +62,13 @@ class ReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = ("id", "user", "created_at")
 
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("id", "row", "seat", "reservation", "performance")
+
+
+class TicketListSerializer(TicketSerializer):
+    reservation = ReservationSerializer(many=False, read_only=True)
+    performance = PerformanceSerializer(many=False, read_only=True)
