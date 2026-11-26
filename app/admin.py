@@ -11,7 +11,6 @@ class GenreAdmin(admin.ModelAdmin):
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name",)
-    list_filter = ("first_name", "last_name",)
 
 
 @admin.register(Play)
@@ -30,12 +29,17 @@ class PerformanceAdmin(admin.ModelAdmin):
     list_filter = ("theatre_hall", "show_time")
 
 
+class TicketTabular(admin.TabularInline):
+    model = Ticket
+    extra = 1
+
+
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ("user", "created_at")
+    inlines = (TicketTabular,)
 
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ("performance", "row", "seat")
-
